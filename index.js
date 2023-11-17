@@ -45,7 +45,11 @@ app.get('/done', async(req,res)=>{
 })
 
 /********post api*********/ 
-
+app.post ('/inprogress', async(req, res)=>{
+    const addProgress = req.body;
+    const result = await InProgressCollection.insertOne(addProgress);
+    res.send(result)
+})
 
 /*********delete api*******/ 
     await client.connect();
