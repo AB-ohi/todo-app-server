@@ -8,7 +8,7 @@ app.use(cors())
 app.use(express.json())
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.qthn2pl.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -45,6 +45,11 @@ app.get('/done', async(req,res)=>{
 })
 
 /********post api*********/ 
+app.post ('/todo', async(req, res)=>{
+    const addTodo = req.body;
+    const result = await todoCollection.insertOne(addTodo);
+    res.send(result)
+})
 app.post ('/inprogress', async(req, res)=>{
     const addProgress = req.body;
     const result = await InProgressCollection.insertOne(addProgress);
@@ -52,6 +57,25 @@ app.post ('/inprogress', async(req, res)=>{
 })
 
 /*********delete api*******/ 
+app.delete('/todo/:id', async(req, res)=>{
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) }
+  const result = await todoCollection.deleteOne(query);
+  res.send(result);
+})
+app.delete('/inprogress/:id', async(req, res)=>{
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) }
+  const result = await InProgressCollection.deleteOne(query);
+  res.send(result);
+})
+app.delete('/done/:id', async(req, res)=>{
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) }
+  const result = await doneCollection.deleteOne(query);
+  res.send(result);
+})
+
     await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
